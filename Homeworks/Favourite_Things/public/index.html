@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
+  <link rel="stylesheet" href="styles/bootstrap-material-design.min.css">
+  <link rel="stylesheet" href="styles/main.css">
+  <title>Hello Frameworks</title>
+</head>
+
+<body>
+  <nav class="navbar navbar-dark fixed-top">
+    <a class="navbar-brand" href="#">Favourite Things</a>
+  </nav>
+  <div id="mainPage" class="container page-container">
+    
+    <hr>
+    <div id="favoriteNumberContainer">
+      <div class="favoriteTitle">Favorite Number:</div>
+      <div id="counterText">0</div>
+      <div id="counterButtons" class="row justify-content-md-center">
+        <div class="col col-md-3"><button type="button" data-amount="-1" class="btn btn-block btn-outline-primary">-1</button></div>
+        <div class="col col-md-3"><button type="button" data-amount="0" data-is-multiplication="true" class="btn btn-block btn-outline-primary">Reset</button></div>
+        <div class="col col-md-3"><button type="button" data-amount="1" class="btn btn-block btn-outline-primary">+1</button></div>
+      </div>
+    
+    </div>
+    <hr>
+    <div class="favoriteTitle">Favorite Color:</div>
+    <div id="favoriteColorContainer" class="mx-auto">
+      <div id="favoriteColorBox">#800000</div>
+    </div>
+    <div id="colorButtons" class="row no-gutters justify-content-md-center">
+      <div class="col col-md-2"><button type="button" id="btn-blue"  data-name="blue" class="btn btn-block btn-outline-primary">Blue</button></div>
+      <div class="col col-md-2"><button type="button" id="btn-green" data-name="green" class="btn btn-block btn-outline-primary">Green</button></div>
+      <div class="col col-md-2"><button type="button" id="btn-red"  data-name="red" class="btn btn-block btn-outline-primary">Red</button></div>
+      <div class="col col-md-2"><button type="button" id="btn-purple"  data-name="purple" class="btn btn-block btn-outline-primary">Purple</button></div>
+      
+    </div>
+    <hr>
+   
+  </div>
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/popper.js"></script>
+  <script src="scripts/bootstrap-material-design.js"></script>
+  <script>$("body").bootstrapMaterialDesign();</script>
+  <script src="scripts/main.js"></script>
+</body>
+
+</html>

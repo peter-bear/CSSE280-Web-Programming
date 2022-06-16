@@ -1,0 +1,83 @@
+body {
+    background: #DDDDDD;
+
+}
+
+.navbar {
+    background-color: #800000;
+    color: white;
+}
+
+.page-container {
+    margin-top: 75px;
+}
+
+.no-gutters>.col, .no-gutters>[class*=col-] {
+    padding: 2px;
+}
+
+.btn.btn-outline-primary{
+    color: white;
+    border: none;
+    border-radius: 5px; 
+    text-transform: none;
+    /* width: 80px; */
+}
+
+.btn.btn-outline-primary:hover, .btn.btn-outline-primary:active, .btn.btn-outline-primary:focus{
+    color: black;
+}
+
+
+#counterText{
+    font-size: 30px;
+    text-align: center;
+}
+
+#counterButtons{
+    margin-top: 10px;
+}
+
+#counterButtons button{
+    background-color: #800000;
+}
+
+#counterButtons button:hover, #counterButtons button:active, #counterButtons button:focus{
+    color: white;
+}
+
+
+.favoriteTitle{
+    font-size: 30px;
+    font-weight: bold;
+}
+
+#favoriteColorContainer{
+    width: 200px;
+    margin: 20px;
+}
+
+#favoriteColorBox{
+    background-color: #800000;
+    line-height: 100px;
+    text-align: center;
+    color: white;
+}
+
+#btn-blue{
+    background-color: blue;
+}
+
+#btn-green{
+    background-color: green;
+}
+
+#btn-red{
+    background-color: red;
+}
+
+#btn-purple{
+    background-color: purple;
+}
+
+

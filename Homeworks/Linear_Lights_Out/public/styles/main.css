@@ -1,0 +1,83 @@
+body {
+    background: #DDDDDD;
+
+}
+
+.navbar {
+    background-color: #800000;
+    color: white;
+}
+
+.page-container {
+    margin-top: 100px;
+}
+
+#gameTitle{
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+#gameBoard{
+    width: 300px;
+    height: 300px;
+    margin: 30px auto;
+}
+
+.myRow{
+    display: flex;
+    flex-direction: row;
+}
+
+.lightBtn{
+    flex: auto;
+    background-color: rgb(53, 53, 53);
+    margin: 2px;
+    line-height: 40px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 5px;
+    color:white;
+}
+
+#newGame{
+    margin-top: 30px;
+    margin-left: auto;
+    background-color: #800000;
+    border-radius: 5px;
+    color: white;
+    text-transform: none;
+    margin-right: 8px;
+    width: 100px;
+}
+
+@media (min-width: 576px) {
+    .lightBtn{
+        font-size: 1.5em;
+        line-height: 60px;
+        margin: 5px;
+    }
+
+    #gameTitle{
+        font-size: 1.75em;
+    }
+
+    #gameBoard{
+        width: 450px;
+    }
+
+
+}
+
+
+@media (min-width: 992px) {
+    .lightBtn{
+        font-size: 2em;
+        margin: 5px;
+    }
+
+    #gameTitle{
+        font-size: 2.25em;
+    }
+
+}

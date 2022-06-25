@@ -3,6 +3,7 @@ var rhit = rhit || {};
 rhit.FB_MOVIEQUOTE_COLLECTION = "MovieQuotes";
 rhit.FB_KEY_QUOTE = "quote";
 rhit.FB_KEY_MOVIE = "movie";
+rhit.FB_KEY_AUTHOR = "author";
 rhit.FB_KEY_LAST_TOUCHED = "lastTouched";
 rhit.fbMovieQuotesManager = null;
 rhit.fbSingleQuoteManager = null;
@@ -18,6 +19,19 @@ function htmlToElement(html) {
 
 rhit.ListPageController = class {
 	constructor() {
+		document.querySelector("#menuShowQuotes").addEventListener("click", (event) => {
+			window.location.href ="/list.html";
+		});
+
+		document.querySelector("#menuShowMyQuotes").addEventListener("click", (event) => {
+			window.location.href =`/list.html?uid=${rhit.fbAuthManager.uid}`;
+		});
+
+		document.querySelector("#menuSignOut").addEventListener("click", (event) => {
+			rhit.fbAuthManager.signOut();
+		});
+
+
 		document.querySelector("#submitAddQuote").addEventListener("click", (event) => {
 			const quote = document.querySelector("#inputQuote").value;
 			const movie = document.querySelector("#inputMovie").value;
@@ -80,18 +94,20 @@ rhit.ListPageController = class {
 }
 
 rhit.MovieQuote = class {
-	constructor(id, quote, movie){
+	constructor(id, quote, movie, author){
 		this.id = id;
 		this.quote = quote;
 		this.movie = movie;
+		this.author = author;
 	}
 }
 
 rhit.FbMovieQuotesManager = class{
-	constructor(){
+	constructor(uid){
 		this._documentSnapshots = [];
 		this._ref = firebase.firestore().collection(rhit.FB_MOVIEQUOTE_COLLECTION);
 		this._unsubscribe = null;
+		this._uid = uid;
 	}
 
 	add(quote, movie){
@@ -99,6 +115,7 @@ rhit.FbMovieQuotesManager = class{
 		this._ref.add({
 			[rhit.FB_KEY_QUOTE] : quote,
 			[rhit.FB_KEY_MOVIE] : movie,
+			[rhit.FB_KEY_AUTHOR] : rhit.fbAuthManager.uid,
 			[rhit.FB_KEY_LAST_TOUCHED] : firebase.firestore.Timestamp.now()
 		})
 		.then((docRef) => {
@@ -110,7 +127,13 @@ rhit.FbMovieQuotesManager = class{
 	}
 
 	beginListening(changeListener){
-		this._unsubscribe = this._ref.orderBy(rhit.FB_KEY_LAST_TOUCHED, "desc").limit(50).onSnapshot((querySnapshot) => {
+		let query = this._ref.orderBy(rhit.FB_KEY_LAST_TOUCHED, "desc").limit(50);
+
+		if(this._uid){
+			query = query.where(rhit.FB_KEY_AUTHOR,"==", this._uid);
+		}
+
+		this._unsubscribe = query.onSnapshot((querySnapshot) => {
 			this._documentSnapshots = querySnapshot.docs;
 			changeListener();
 			// querySnapshot.forEach((doc) => {
@@ -157,11 +180,15 @@ rhit.DetailPageController = class {
 		document.querySelector("#submitDeleteQuote").addEventListener("click", (event) => {
 			rhit.fbSingleQuoteManager.delete().then(() => {
 				console.log("Document delete successfully");
-				window.location.href = "/";
+				window.location.href = "/list.html";
 			})
 			.catch(function(error){
 				console.error("Error delete document: ", error);
 			});
+		});
+
+		document.querySelector("#menuSignOut").addEventListener("click", (event) => {
+			rhit.fbAuthManager.signOut();
 		});
 
 		$("#editQuoteDialog").on("show.bs.modal", function (event) {
@@ -175,12 +202,23 @@ rhit.DetailPageController = class {
 			document.querySelector("#inputQuote").focus();
 		});
 
+
+
 		rhit.fbSingleQuoteManager.beginListening(this.updateView.bind(this));
 	}
 
 	updateView() {
 		document.querySelector("#cardQuote").innerHTML = rhit.fbSingleQuoteManager.quote;
 		document.querySelector("#cardMovie").innerHTML = rhit.fbSingleQuoteManager.movie;
+
+		console.log(rhit.fbSingleQuoteManager.author+" "+rhit.fbAuthManager.uid);
+
+
+		if(rhit.fbSingleQuoteManager.author == rhit.fbAuthManager.uid){
+			document.querySelector("#menuEdit").style.display = "flex";
+			document.querySelector("#menuDelete").style.display = "flex";
+		}
+
 	}
 }
    
@@ -234,6 +272,10 @@ rhit.FbSingleQuoteManager = class {
 
 	get movie(){
 		return this._documentSnapshot.get(rhit.FB_KEY_MOVIE);
+	}
+
+	get author(){
+		return this._documentSnapshot.get(rhit.FB_KEY_AUTHOR);
 	}
 }
 
@@ -308,19 +350,23 @@ rhit.FbAuthManager = class{
 	}
 }
 
-   
 
-/* Main */
-/** function and class syntax examples */
-rhit.main = function () {
-	console.log("Ready");
-	rhit.fbAuthManager = new rhit.FbAuthManager();
-	rhit.fbAuthManager.beginListening(() => {
-		
-	});
+rhit.checkForRedirects = function(){
+	if(document.querySelector("#loginPage") && rhit.fbAuthManager.isSignedIn){
+		window.location.href ="/list.html";
+	}
 
+	if(!document.querySelector("#loginPage") && !rhit.fbAuthManager.isSignedIn){
+		window.location.href ="/";
+	}
+};
+
+rhit.initializePage = function(){
 	if(document.querySelector("#listPage")){
-		rhit.fbMovieQuotesManager = new rhit.FbMovieQuotesManager();
+		const uid = new URLSearchParams(window.location.search).get("uid");
+		console.log(`list page for ${uid}`);
+
+		rhit.fbMovieQuotesManager = new rhit.FbMovieQuotesManager(uid);
 		new rhit.ListPageController();
 	}
 
@@ -342,6 +388,19 @@ rhit.main = function () {
 		new rhit.LoginPageController();
 
 	}
+};
+
+/* Main */
+/** function and class syntax examples */
+rhit.main = function () {
+	console.log("Ready");
+	rhit.fbAuthManager = new rhit.FbAuthManager();
+	rhit.fbAuthManager.beginListening(() => {
+		rhit.checkForRedirects();
+		rhit.initializePage();
+	});
+
+
 	
 
 	//Temp code for Read and Add

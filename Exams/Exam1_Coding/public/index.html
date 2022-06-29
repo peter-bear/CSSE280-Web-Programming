@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
+  <link rel="stylesheet" href="styles/bootstrap-material-design.min.css">
+  <link rel="stylesheet" href="styles/main.css">
+  <title>House Points</title>
+</head>
+
+<body>
+  <nav class="navbar navbar-dark fixed-top">
+    <a class="navbar-brand" href="#">House Points</a>
+  </nav>
+  <div id="mainPage" class="container page-container">
+    <div class="row justify-content-center">
+      <div id="Gryffindor" class="col-5 col-lg-2 card">
+        <img src="./images/Gryffindor.webp" alt="Gryffindor">
+        <h5 class="card-title" style="color: #740001;">Gryffindor</h5>
+        <h2 id="g_score">0</h2>
+      </div>
+      <div id="Slytherin" class="col-5 col-lg-2 card">
+        <img src="./images/Slytherin.webp" alt="Slytherin">
+        <h5 class="card-title" style="color: #1A472A;">Slytherin</h5>
+        <h2 id="s_score">0</h2>
+      </div>
+      <div id="Hufflepuff" class="col-5 col-lg-2 card">
+        <img src="./images/Hufflepuff.webp" alt="Hufflepuff">
+        <h5 class="card-title" style="color: #FFD800;">Hufflepuff</h5>
+        <h2 id="h_score">0</h2>
+      </div>
+      <div id="Ravenclaw" class="col-5 col-lg-2 card">
+        <img src="./images/Ravenclaw.webp" alt="Ravenclaw">
+        <h5 class="card-title" style="color: #0E1A40;">Ravenclaw</h5>
+        <h2 id="r_score">0</h2>
+      </div>
+    </div>
+    <hr>
+    <div id="controlPart">
+      <div><input type="radio" value="g" checked> Gryffindor</div>
+      <div><input type="radio" value="s"> Slytherin</div>
+      <div><input type="radio" value="h"> Hufflepuff</div>
+      <div><input type="radio" value="r"> Ravenclaw</div>
+      <div style="margin: 20px auto;"><input id="inputScore" type="text"></div>
+      <button id="gain" type="button" class="btn btn-outline-success">GAIN</button>
+      <button id="lose" type="button" class="btn btn-outline-warning">LOSE</button>
+    </div>
+    
+    
+    <br>
+
+  </div>
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/popper.js"></script>
+  <script src="scripts/bootstrap-material-design.js"></script>
+  <script>$("body").bootstrapMaterialDesign();</script>
+  <script src="scripts/main.js"></script>
+</body>
+
+</html>

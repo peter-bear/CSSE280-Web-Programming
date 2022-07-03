@@ -94,11 +94,10 @@ rhit.ListPageController = class {
 }
 
 rhit.MovieQuote = class {
-	constructor(id, quote, movie, author){
+	constructor(id, quote, movie){
 		this.id = id;
 		this.quote = quote;
 		this.movie = movie;
-		this.author = author;
 	}
 }
 

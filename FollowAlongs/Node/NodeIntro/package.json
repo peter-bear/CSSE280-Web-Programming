@@ -1,0 +1,16 @@
+{
+  "name": "nodeintro",
+  "version": "1.0.0",
+  "description": "learn to use NPM",
+  "main": "npmAsciiFun.js",
+  "scripts": {np
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node npmAsciiFun.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "figlet": "^1.5.2",
+    "ascii-img-canvas-nodejs": "1.8.1"
+  }
+}

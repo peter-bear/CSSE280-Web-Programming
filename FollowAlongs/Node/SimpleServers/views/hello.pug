@@ -1,0 +1,20 @@
+html
+    head
+        title= title
+        link(rel="stylesheet" href="/static/styles/main.css") 
+    body 
+        div.button-group
+            button#decButton Decrement
+            button#resetButton Reset
+            button#incButton Increment
+            hr
+            form(action='/pug/hello', method="POST", onSubmit="saveCurrentValue();")
+                input(id="saveCounter", type="hidden", name="count", value="")
+                button(type="submit") Save
+        div#counterText Count = #{count}
+        script(src="/static/scripts/main.js")
+        script(type="text/javascript").
+            counter = #{count}
+            function saveCurrentValue(){
+                document.querySelector("#saveCounter").value = counter;
+            }

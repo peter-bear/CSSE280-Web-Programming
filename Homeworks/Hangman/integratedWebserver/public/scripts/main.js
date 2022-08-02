@@ -49,7 +49,7 @@ rhit.AdminController = class {
 			console.log("No word provided.  Ignoring request.");
 			return;
 		}
-		console.log(`TODO: Add the word ${word} to the backend`);
+		// console.log(`TODO: Add the word ${word} to the backend`);
 
 		// TODO: Add your code here.
 		fetch(adminApiUrl+"add", {
@@ -64,7 +64,7 @@ rhit.AdminController = class {
 	}
 
 	readAll() {
-		console.log(`TODO: Read all the words from the backend, then update the screen.`);
+		// console.log(`TODO: Read all the words from the backend, then update the screen.`);
 
 		// TODO: Add your code here.
 		fetch(adminApiUrl+"words", {
@@ -87,7 +87,7 @@ rhit.AdminController = class {
 			console.log("No index provided.  Ignoring request.");
 			return;
 		}
-		console.log(`TODO: Read the word for index ${index} from the backend, then update the screen.`);
+		// console.log(`TODO: Read the word for index ${index} from the backend, then update the screen.`);
 
 		// TODO: Add your code here.
 		fetch(adminApiUrl+"word/"+index, {
@@ -113,7 +113,7 @@ rhit.AdminController = class {
 			console.log("No word provided.  Ignoring request.");
 			return;
 		}
-		console.log(`TODO: Update the word ${word} at index ${index} on the backend.`);
+		// console.log(`TODO: Update the word ${word} at index ${index} on the backend.`);
 
 		// TODO: Add your code here.
 		fetch(adminApiUrl+"word/"+index, {
@@ -132,7 +132,7 @@ rhit.AdminController = class {
 			console.log("No index provided.  Ignoring request.");
 			return;
 		}
-		console.log(`TODO: Delete the word at index ${index} from the backend.`);
+		// console.log(`TODO: Delete the word at index ${index} from the backend.`);
 
 		// TODO: Add your code here.
 		fetch(adminApiUrl+"word/"+index, {
@@ -173,7 +173,7 @@ rhit.PlayerController = class {
 	}
 
 	handleNewGame() {
-		console.log(`TODO: Create a new game and update the view (after the backend calls).`);
+		// console.log(`TODO: Create a new game and update the view (after the backend calls).`);
 		this._init_state = true;
 		// TODO: Add your code here.
 		fetch(playerApiUrl+"numwords/", {
@@ -203,7 +203,7 @@ rhit.PlayerController = class {
 	}
 
 	handleKeyPress(keyValue) {
-		console.log(`You pressed the ${keyValue} key`);
+		// console.log(`You pressed the ${keyValue} key`);
 
 		// TODO: Add your code here.
 		this._init_state = false;
@@ -225,7 +225,7 @@ rhit.PlayerController = class {
 	}
 
 	updateView() {
-		console.log(`TODO: Update the view.`);
+		// console.log(`TODO: Update the view.`);
 		// TODO: Add your code here.
 		const keyboardKeys = document.querySelectorAll(".key");
 		if(this._init_state){
@@ -251,9 +251,9 @@ rhit.PlayerController = class {
 				for(let i=0;i<this._locations.length;i++){
 					let tmp = this._locations[i];
 					let front = this._displayedWord.substring(0, tmp);
-					let end = this._displayedWord.substrinfrontg(tmp + this._word_length);
+					let end = this._displayedWord.substring(tmp+1, this._word_length);
 					this._displayedWord = front + this._pressedKey + end;
-					
+			
 				}
 			}
 		}

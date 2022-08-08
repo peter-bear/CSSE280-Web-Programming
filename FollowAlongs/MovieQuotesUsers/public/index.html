@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
   <link rel="stylesheet" href="styles/bootstrap-material-design.min.css">
+  <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.css" />
   <link rel="stylesheet" href="styles/main.css">
   <title>My Movie Quotes</title>
 </head>
@@ -16,9 +17,10 @@
   </nav>
   <div id="loginPage" class="container page-container">
 
-    <img id="roseLogo" src="./images/rose-logo.png" alt="Rose-Hulman logo">
+    <h1 class="text-center display-4 my-5">Please sign in to use Movie Quotes</h1>
+    <div id="firebaseui-auth-container"></div>
     <button id="rosefireButton" type="button" class="btn">Sign in with Rosefire</button>
-
+    
   </div>
 
 
@@ -32,6 +34,7 @@
   <script src="/__/firebase/7.18.0/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
   <script src="scripts/rosefire.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.js"></script>
   <script src="scripts/main.js"></script>
 </body>
 

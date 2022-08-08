@@ -61,8 +61,49 @@ rhit.SideNavController = class{
 rhit.ProfilePageController = class {
 	constructor() {
 	  console.log("Created Profile page controller");
+	  rhit.fbUserManager.beginListening(rhit.fbAuthManager.uid, this.updateView.bind(this));
+	
+	  document.querySelector("#submitName").onclick = (event) => {
+		const name = document.querySelector("#inputName").value;
+		rhit.fbUserManager.updateName(name).then(() => {
+			window.location.href = "/list.html";
+		});
+	  }
+
+	  document.querySelector("#submitPhoto").onclick = (event) => {
+		document.querySelector("#inputFile").click();
+	  }
+	  
+	  document.querySelector("#inputFile").addEventListener("change", (event)=>{
+		const file = event.target.files[0];
+		const storageRef = firebase.storage().ref().child(rhit.fbAuthManager.uid);
+
+		storageRef.put(file).then((UploadTaskSnapshot) => {
+			console.log("File uploaded");
+
+			// save download url
+			storageRef.getDownloadURL().then((result) => {
+				// console.log(result);
+				rhit.fbUserManager.updatePhotoUrl(result);
+			});
+
+		});
+
+	  });
 	}
-	updateView() {}
+	updateView() {
+		console.log("name: "+rhit.fbUserManager.name);
+		console.log("photoUrl: "+rhit.fbUserManager.photoUrl);
+
+		if(rhit.fbUserManager.name){
+			document.querySelector("#inputName").value = rhit.fbUserManager.name;
+		}
+
+		if(rhit.fbUserManager.photoUrl){
+			document.querySelector("#profilePhoto").src = rhit.fbUserManager.photoUrl;
+		}
+
+	}
 }
 
 rhit.FbUserManager = class {
@@ -105,7 +146,19 @@ rhit.FbUserManager = class {
 	}
 
 	beginListening(uid, changeListener) {
+		const userRef = this._collectoinRef.doc(uid);
 
+		this._unsubscribe = userRef.onSnapshot((doc) => {
+			if (doc.exists) {
+				this._document = doc;
+				console.log("Document data:", doc.data());
+				changeListener();
+			} else {
+				
+				console.log("No user! That's bad!");
+				
+			}
+		});
 	}
 	
 	stopListening() { 
@@ -113,13 +166,32 @@ rhit.FbUserManager = class {
 	}
 	
 	updatePhotoUrl(photoUrl) {
-
+		const userRef = this._collectoinRef.doc(rhit.fbAuthManager.uid);
+		return userRef.update({
+			[rhit.FB_KEY_PHOTO_URL] : photoUrl
+		})
+		.then(() => {
+			console.log("Document photo updated");
+		})
+		.catch(function(error){
+			console.error("Error adding document: ", error);
+		});
 	}
 	
 	updateName(name) {
-
+		const userRef = this._collectoinRef.doc(rhit.fbAuthManager.uid);
+		return userRef.update({
+			[rhit.FB_KEY_NAME] : name
+		})
+		.then(() => {
+			console.log("Document name updated");
+		})
+		.catch(function(error){
+			console.error("Error adding document: ", error);
+		});
 	}
 
+	get isListening(){	return !!this._unsubscribe; }
 	get name() {   return this._document.get(rhit.FB_KEY_NAME); }
 	get photoUrl() {   return this._document.get(rhit.FB_KEY_PHOTO_URL); }
 
@@ -127,9 +199,6 @@ rhit.FbUserManager = class {
    
 rhit.ListPageController = class {
 	constructor() {
-
-
-
 		document.querySelector("#submitAddQuote").addEventListener("click", (event) => {
 			const quote = document.querySelector("#inputQuote").value;
 			const movie = document.querySelector("#inputMovie").value;
@@ -155,6 +224,12 @@ rhit.ListPageController = class {
 
 
 	updateList() {
+
+		if(rhit.fbMovieQuotesManager.uid && !rhit.fbUserManager.isListening){
+			rhit.fbUserManager.beginListening(rhit.fbMovieQuotesManager.uid, () => {
+				document.querySelector("#userSpecificHeading").innerHTML = `Showing quotes mdade by ${rhit.fbUserManager.name}`;
+			})			
+		}
 		
 		// Make a new quoteListContainer
 		const newList = htmlToElement('<div id="quoteListContainer"></div>');
@@ -204,7 +279,7 @@ rhit.FbMovieQuotesManager = class{
 		this._documentSnapshots = [];
 		this._ref = firebase.firestore().collection(rhit.FB_MOVIEQUOTE_COLLECTION);
 		this._unsubscribe = null;
-		this._uid = uid;
+		this.uid = uid;
 	}
 
 	add(quote, movie){
@@ -226,8 +301,8 @@ rhit.FbMovieQuotesManager = class{
 	beginListening(changeListener){
 		let query = this._ref.orderBy(rhit.FB_KEY_LAST_TOUCHED, "desc").limit(50);
 
-		if(this._uid){
-			query = query.where(rhit.FB_KEY_AUTHOR,"==", this._uid);
+		if(this.uid){
+			query = query.where(rhit.FB_KEY_AUTHOR,"==", this.uid);
 		}
 
 		this._unsubscribe = query.onSnapshot((querySnapshot) => {
@@ -299,12 +374,17 @@ rhit.DetailPageController = class {
 			document.querySelector("#inputQuote").focus();
 		});
 
-
-
 		rhit.fbSingleQuoteManager.beginListening(this.updateView.bind(this));
 	}
 
 	updateView() {
+		if(!rhit.fbUserManager.isListening){
+			rhit.fbUserManager.beginListening(rhit.fbSingleQuoteManager.author,
+				this.updateAuthorBox.bind(this));
+		}
+
+	
+
 		document.querySelector("#cardQuote").innerHTML = rhit.fbSingleQuoteManager.quote;
 		document.querySelector("#cardMovie").innerHTML = rhit.fbSingleQuoteManager.movie;
 
@@ -317,9 +397,27 @@ rhit.DetailPageController = class {
 		}
 
 	}
+
+	updateAuthorBox() {
+		// TODO: Check if the name and photoUrl exist before updating the UI
+		if(rhit.fbUserManager.name){
+			document.querySelector("#authorName").innerHTML = rhit.fbUserManager.name;
+		}
+		if(rhit.fbUserManager.photoUrl){
+			document.querySelector("#profilePhoto").src = rhit.fbUserManager.photoUrl;
+		}
+		document.querySelector("#authorBox").onclick = (event) => {
+			if(rhit.fbSingleQuoteManager.author == rhit.fbAuthManager.uid){
+				window.location.href = "/profile.html";
+			}else{
+				window.location.href=`/list.html?uid=${rhit.fbSingleQuoteManager.author}`
+			}
+	
+		};
+	}
+	 
 }
    
-
 rhit.FbSingleQuoteManager = class {
 	constructor(movieQuoteId) {
 		this._documentSnapshot = {};
@@ -382,6 +480,7 @@ rhit.LoginPageController = class{
 		document.querySelector("#rosefireButton").onclick = (event) => {
 			rhit.fbAuthManager.signIn();
 		};
+		rhit.fbAuthManager.startFirebaseUI();
 	}
 }
 
@@ -428,6 +527,26 @@ rhit.FbAuthManager = class{
 		});
 	}
 
+	
+	startFirebaseUI(){
+		// FirebaseUI config.
+		var uiConfig = {
+		signInSuccessUrl: '/',
+		signInOptions: [
+			// Leave the lines as is for the providers you want to offer your users.
+			firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+			firebase.auth.EmailAuthProvider.PROVIDER_ID,
+			firebase.auth.PhoneAuthProvider.PROVIDER_ID,
+			firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
+		],
+		};
+
+		// Initialize the FirebaseUI Widget using Firebase.
+		const ui = new firebaseui.auth.AuthUI(firebase.auth());
+		// The start method will wait until the DOM is loaded.
+		ui.start('#firebaseui-auth-container', uiConfig);
+	}
+
 	get isSignedIn(){
 		return !!this._user;
 	}
@@ -437,11 +556,11 @@ rhit.FbAuthManager = class{
 	}
 
 	get name(){
-		return this._name;
+		return this._name || this._user.displayName;
 	}
 
 	get photoUrl(){
-		return this._photoUrl;
+		return this._photoUrl || this._user.photoURL;
 	}
 }
 
@@ -461,7 +580,7 @@ rhit.initializePage = function(){
 	if(document.querySelector("#listPage")){
 		const uid = new URLSearchParams(window.location.search).get("uid");
 		console.log(`list page for ${uid}`);
-
+	
 		rhit.fbMovieQuotesManager = new rhit.FbMovieQuotesManager(uid);
 		new rhit.ListPageController();
 	}
@@ -502,6 +621,7 @@ rhit.createUserObjectIfNeeded = function(){
 			return;
 		}
 
+		console.log("add new user");
 		// Call addNewUserMaybe
 		rhit.fbUserManager.addNewUserMaybe(
 			rhit.fbAuthManager.uid,

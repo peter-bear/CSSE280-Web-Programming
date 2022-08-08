@@ -38,6 +38,7 @@
           <div class="card" >
             <img id="profilePhoto" class="card-img-top" src="./images/rose-logo.png" alt="Profile photo">
             <button id="submitPhoto" class="btn btn-primary">Update Profile Photo</button>
+            <input type="file" name="" id="inputFile" hidden>
             <div class="card-body">
               <div class="form-group">
                 <label for="inputName">Name</label>
@@ -62,6 +63,7 @@
   <script>$("body").bootstrapMaterialDesign();</script>
   <script src="/__/firebase/7.18.0/firebase-app.js"></script>
   <script src="/__/firebase/7.18.0/firebase-auth.js"></script>
+  <script src="/__/firebase/7.18.0/firebase-storage.js"></script>
   <script src="/__/firebase/7.18.0/firebase-analytics.js"></script>
   <script src="/__/firebase/7.18.0/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
